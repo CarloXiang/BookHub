@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+        <script type="text/javascript" src="index.js"></script>
+        <link rel="stylesheet" type="text/css" href="index.css">
+        <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+        <link href='https://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <title>Capilary - Book Hub</title>
+    </head>
+    <body ng-app="app" ng-controller="loadController">
+        
+        <!-- Desktop/Large and Medium Devices -->
+        <div class="hidden-sm hidden-xs lg-md-container">
+            <div class="header">
+                <span class="site-name">BookHub</span>Searching Books made easy!
+            </div>
+            <div class="row lg-md-search">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="search_lg_md">Inline Search</label>
+                        <input ng-model="search_lg_md" type="text" class="form-control" id="search_lg_md" placeholder="Search (by name, price, rating)">
+                    </div>
+                    <span class="label label-info"><b>Total Books:</b> {{ bookCount }}</span>
+                    <span class="label label-success"><b>Total Bookmarks:</b> {{ bookmarks }}</span>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="col-lg-8 col-md-8">
+                        <div class="book-list-parent-lg col-lg-12 col-md-12">
+                            <div class="row book-list-lg">
+                              <div ng-repeat="books in book_list.books | filter:search_lg_md">
+                                  <div ng-mouseover="thumbnailHover(books.id)" class="col-lg-3 col-md-3">
+                                    <div class="thumbnail thumbnail-alter">
+                                      <img class="large-book-image-grid" src="{{ books.image }}" alt="...">
+                                      <div class="caption">
+                                        <h5>{{ books.name | limitTo: 10 }}...</h5>
+                                        <div class="row">
+                                            <div class="col-lg-5 col-md-5"><b>{{ books.price }}</b></div>
+                                            <div ng-click="bookmark_lg($index)" class="col-lg-3 col-md-3">
+                                                <i ng-if="!bookmark_lg_array[$index]" class="fa fa-bookmark-o"></i>
+                                                <i ng-if="bookmark_lg_array[$index] === true" class="fa fa-bookmark"></i>
+                                            </div>
+                                            <div class="col-lg-4 col-md-4"><b>{{ books.rating }}</b>/5</div>  
+                                        </div>
+                                      </div>
+                                     </div>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="row">
+                                <h3><b>{{ selectedBook.name }}</b></h3>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="row">
+                                              <div class="col-lg-12 col-md-12">
+                                                <a href="#" class="thumbnail thumbnail-alter-lg">
+                                                  <img src="{{ selectedBook.image }}" alt="...">
+                                                  <div class="book-price-lg">
+                                                    <center>{{ selectedBook.price }}</center>
+                                                  </div>
+                                                </a>
+                                              </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="paperback"><i class="fa fa-steam"></i> {{ selectedBook.details.Binding }}</div>
+                                            <div class="author">
+                                                <i class="fa fa-pencil-square-o"></i><b> Author:</b> {{ selectedBook.author }}
+                                            </div>
+                                            <div class="row">
+                                                <div class="book-rating">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="publisher">
+                                                <i class="fa fa-print"></i><b> Publisher:</b> {{ selectedBook.details.Publisher }}
+                                            </div>
+                                            <div class="isbn">
+                                                <i class="fa fa-qrcode"></i><b> ISBN:</b> {{ selectedBook.details.ISBN }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <h4><b><i class="fa fa-book"></i> Description Of The Book</b></h4>
+                                        <p>{{ selectedBook.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+        <!-- Small Devices -->
+        <div class="hidden-lg hidden-md hidden-xs sm-container">
+            <div class="header">
+                <span class="site-name">BookHub</span>Searching Books made easy!
+            </div>
+            <form class="form-inline">
+                <div class="form-group">
+                    <label class="sr-only" for="search_sm">Inline Search</label>
+                    <input ng-model="search_sm" type="text" class="form-control" id="search_sm" placeholder="Search (by name, price)">
+                    <span class="label label-info"><b>Total Books:</b> {{ bookCount }}</span>
+                    <span class="label label-success"><b>Total Bookmarks:</b> {{ bookmarks }}</span>
+                </div>
+            </form>
+            <div ng-click="bookDescription($index)" ng-repeat="books in book_list.books | filter:search_sm" class="row">
+                <div class="media-box">
+                    <div class="media">
+                        <div class="media-left pull-left">
+                            <a href="#">
+                                <img style="width: 64px; height: 64px;" class="media-object" src="{{ books.image }}" alt="...">
+                            </a>
+                        </div>
+                        <div class="media-body pull-left">
+                            <h4 class="media-heading">{{ books.name }}</h4>
+                            <div class="bookmark-sm rating-sm"></div>
+                            {{ books.price }}
+                            <div ng-click="bookmark_lg($index)">
+                                <i ng-if="!bookmark_lg_array[$index]" class="fa fa-bookmark-o fa-2x"></i>
+                                <i ng-if="bookmark_lg_array[$index] === true" class="fa fa-bookmark fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="a[$index] === true" class="book-info-sm">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-5">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <a href="#" class="thumbnail thumbnail-alter-sm">
+                                            <img src="{{ books.image }}" alt="...">
+                                        </a>
+                                        <div class="book-price-sm">
+                                            <center>{{ books.price }}</center>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <h3>{{ books.name }}</h3>
+                                <div class="paperback"><i class="fa fa-steam"></i> {{ books.details.Binding }}</div>
+                                <div class="rating-sm"></div>
+                                <div class="author">
+                                    <i class="fa fa-pencil-square-o"></i><b> Author:</b> {{ books.author }}
+                                </div>
+                                <div class="publisher">
+                                    <i class="fa fa-print"></i><b> Publisher:</b> {{ books.details.Publisher }}
+                                </div>
+                                <div class="isbn">
+                                    <i class="fa fa-qrcode"></i><b> ISBN:</b> {{ books.details.ISBN }}
+                                </div>
+                                <div class="description">
+                                    <h4><b><i class="fa fa-book"></i> Description Of The Book</b></h4>
+                                    <p>{{ books.description }}</p>
+                                </div>
+                            </div>
+</div>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        
+        <!-- Mobile Devices -->
+        <div class="hidden-lg hidden-md hidden-sm xs-container">
+            <div class="header-xs">
+                <center>
+                    <span class="site-name">BookHub</span>
+                    <div>Searching Books made easy!</div>
+                </center>
+            </div>
+            <div class="row">
+                <center>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label class="sr-only" for="search_xs">Inline Search</label>
+                            <input ng-model="search_xs" type="text" class="form-control" id="search_xs" placeholder="Search (by name, price)">
+                        </div>
+                        <div class="label label-info"><b>Total Books:</b> {{ bookCount }}</div>
+                        <div class="label label-success"><b>Total Bookmarks:</b> {{ bookmarks }}</div>
+                    </form>
+                </center>
+            </div>
+            <div class="row xs-container-elements">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div ng-repeat="book in book_list.books | filter:search_xs" class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ $index }}" aria-expanded="true" aria-controls="{{ $index }}">
+                                    {{ book.name }}
+                                </a>
+                                <div>
+                                    <b>{{ book.price }}</b>
+                                    <span ng-click="bookmark_lg($index)">
+                                        <i ng-if="!bookmark_lg_array[$index]" class="fa fa-bookmark-o"></i>
+                                        <i ng-if="bookmark_lg_array[$index] === true" class="fa fa-bookmark"></i>
+                                    </span>
+                                </div>
+                            </h4>
+                        </div>
+                        <div id="{{ $index }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="thumbnail">
+                                          <img class="large-book-image-grid" src="{{ book.image }}" alt="...">
+                                          <div class="caption">
+                                            <h5><b>{{ book.name }}</b></h5>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="paperback"><i class="fa fa-steam"></i> {{ book.details.Binding }}</div>
+                                                    <div class="author">
+                                                        <i class="fa fa-pencil-square-o"></i><b> Author:</b> {{ book.author }}
+                                                    </div>
+                                                    <div>
+                                                        {{ book.price }}
+                                                    </div>
+                                                    <div>
+                                                        <b>{{ book.rating }}</b> / 5
+                                                    </div>
+                                                    <div class="publisher">
+                                                        <i class="fa fa-print"></i><b> Publisher:</b> {{ book.details.Publisher }}
+                                                    </div>
+                                                    <div class="isbn">
+                                                        <i class="fa fa-qrcode"></i><b> ISBN:</b> {{ book.details.ISBN }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
